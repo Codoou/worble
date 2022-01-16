@@ -15,6 +15,7 @@ class WorbleGame:
         self.available_letters = list(string.ascii_lowercase)
         self.used_misplaced_letters = []
         self.show_word = False
+        self.hidden_word = "_____"
 
 
     def play_round(self, round_number=1):
@@ -24,6 +25,7 @@ class WorbleGame:
         print("============================================")
         print("Round Number: ", str(round_number))
         print("Available Letters: ", self.available_letters)
+        print("Currently uncovered: ", self.hidden_word)
         if self.show_word:
             print("Winning word: ", self.reveal())
 
@@ -45,11 +47,16 @@ class WorbleGame:
 
         word_dict = self._dict_conversion(word)
 
+
+        index_of_word = 0
         for placement in self.KEYS:
             if self._dict_compare(word_dict, self._split_word, placement):
                 """"""
                 print(f"Letter '{word_dict[placement]}' at {placement} is correct.")
-                self.black_list_letter(word_dict[placement])
+                # self.black_list_letter(word_dict[placement])
+                # self.hidden_word[index_of_word] = word_dict[placement]
+                self.hidden_word = self.replace_str_index(self.hidden_word, index_of_word, word_dict[placement])
+
 
             elif self._list_compare(word_dict[placement]):
                 """"""
@@ -57,7 +64,12 @@ class WorbleGame:
             else:
                 self.black_list_letter(word_dict[placement])
 
+            index_of_word += 1
+
         return validated
+
+    def replace_str_index(self, text,index=0,replacement=''):
+        return '%s%s%s'%(text[:index],replacement,text[index+1:])
 
     def black_list_letter(self, letter):
         """"""
@@ -93,7 +105,7 @@ class WorbleGame:
         if word not in self._word_list:
             print(f"'{word}' is not a valid word. Please try again.")
 
-            word = self.input_word(word)
+            word = self.input_word('')
             return word
 
         for letter in word:
