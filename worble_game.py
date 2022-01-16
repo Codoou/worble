@@ -4,6 +4,7 @@ import string
 class WorbleGame:
     ROUNDS = 5
     KEYS = ['first', 'second', 'third', 'fourth', 'fifth']
+    SURRENDER = "ff"
     
     def __init__(self):
 
@@ -12,6 +13,7 @@ class WorbleGame:
         self._split_word = self._word_dict[self._word]
         self.available_letters = list(string.ascii_lowercase)
         self.used_misplaced_letters = []
+        self.show_word = False
 
 
     def play_round(self, round_number=1):
@@ -21,6 +23,8 @@ class WorbleGame:
         print("============================================")
         print("Round Number: ", str(round_number))
         print("Available Letters: ", self.available_letters)
+        if self.show_word:
+            print("Winning word: ", self.reveal())
 
         
         word = self.input_word()
@@ -39,7 +43,6 @@ class WorbleGame:
             return validated
 
         word_dict = self._dict_conversion(word)
-        # print(word_dict)
 
         for placement in self.KEYS:
             if self._dict_compare(word_dict, self._split_word, placement):
@@ -57,7 +60,11 @@ class WorbleGame:
 
     def black_list_letter(self, letter):
         """"""
-        self.available_letters.remove(letter)
+        try:
+            self.available_letters.remove(letter)
+        except Exception as ex:
+            print("Error removing letter: ", letter)
+            raise ex
 
     def _list_compare(self, letter):
         """"""
@@ -78,11 +85,22 @@ class WorbleGame:
 
         word = input("Enter 5 letter word: ")
         print(word)
+        if word == self.SURRENDER:
+            print("World was: ", self.reveal())
+            raise Exception("you're bad")
 
         if word not in self._word_list:
             print(f"'{word}' is not a valid word. Please try again.")
+
             word = self.input_word(word)
             return word
+
+        for letter in word:
+            if letter not in self.available_letters:
+                print(f"'{letter}' was already used. Please try again.")
+
+                word = self.input_word('')
+                return word
 
         return word
 
