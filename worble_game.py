@@ -1,5 +1,6 @@
 import random
 import string
+import sys
 
 class WorbleGame:
     ROUNDS = 5
@@ -87,7 +88,7 @@ class WorbleGame:
         print(word)
         if word == self.SURRENDER:
             print("World was: ", self.reveal())
-            raise Exception("you're bad")
+            self.loser()
 
         if word not in self._word_list:
             print(f"'{word}' is not a valid word. Please try again.")
@@ -107,11 +108,11 @@ class WorbleGame:
 
     def winner(self):
         print("You won, the correct word was: ", self.reveal())
-        raise
+        sys.exit()
 
     def loser(self):
         print("You lost, the correct answer was: ", self.reveal())
-        raise
+        sys.exit()
 
     def reveal(self):
         return self._word
